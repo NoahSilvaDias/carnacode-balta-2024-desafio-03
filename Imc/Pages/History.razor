@@ -1,4 +1,5 @@
 ﻿@page "/history"
+@inject ILocalStorageService localStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,42 +10,69 @@
     <PageTitle>Histórico</PageTitle>
 </head>
 <body>
-<div class="app-container">
-    <div class="title-logo">
-        <img src="../assets/icon-no-bg.png" class="logo" alt="">
-    </div>
-    <div class="title-container">
-        <h1 class="title">Cálculo de IMC</h1>
-    </div>
-    <div class="search-data-container">
-        <input class="inputSearch" type="text" placeholder="Pesquisar..."/>
-    </div>
-    <div class="calculsList">
-        <div class="firstItem">
-            <div class="tumbnail-container">
-                <div class="tumbnail"></div>
-                <div class="rato">
-                    <div class="titleDate">
-                        <h4>Peso ideal ✅</h4>
-                        <p class="dateFirstItem">8m atrás</p>
-                    </div>
-                    <p class="description">Parabéns, você está no seu peso ideal,<br>continue mantendo este estilo!</p>
-                </div>
-            </div>
+    <div class="app-container">
+        <div class="title-logo">
+            <img src="../assets/icon-no-bg.png" class="logo" alt="">
         </div>
-        <div class="secondItem">
-            <div class="tumbnail-container">
-                <div class="tumbnail"></div>
-                <div class="titleDateDescription">
-                    <div class="titleDate">
-                        <h4>Sobrepeso ⛔️</h4>
-                        <p class="dateSecondItem">12/10/2023</p>
+        <div class="title-container">
+            <h1 class="title">Cálculo de IMC</h1>
+        </div>
+        <div class="search-data-container">
+            <input class="inputSearch" type="text" placeholder="Pesquisar..."/>
+        </div>
+        <div class="calculsList">
+        @foreach (var item in storedItems)
+            {
+                @if (item != null)
+                {
+                    <div class="Item">
+                        <div class="titleDate">
+                            <h4>@item.Titulo</h4>
+                            <p class="dateItem">@item.Data</p>
+                        </div>
+                        <p class="description">@item.Descricao</p>
                     </div>
-                    <p class="description">Estamos quase lá! Faça alguns ajustes<br>para ficar no peso ideal!</p>
-                </div>
-            </div>
+                }
+            }
         </div>
     </div>
-</div>
 </body>
 </html>
+
+@code {
+    public class Item
+    {
+        public string Titulo { get; set; } = "Peso ideal ✅";
+        public string Data { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
+        public string Descricao { get; set; } = "Parabéns, você está no seu peso ideal, continue mantendo este estilo!";
+    }
+    private List<Item?> storedItems = new List<Item?>();
+
+    protected override async Task OnInitializedAsync()
+    {
+    await base.OnInitializedAsync();
+
+    await Initial();
+    }
+
+    private async Task Initial()
+    {
+        await RetrieveAllItems();
+    }
+    public async Task RetrieveAllItems()
+    {
+        storedItems.Clear();
+        var keys = await localStorage.KeysAsync();
+        keys = keys.OrderByDescending(i => i).ToList();
+        foreach (var key in keys)
+        {
+            string? json = await localStorage.GetItemAsync<string>(key);
+
+            if (json != null)
+            {
+                Item? item = System.Text.Json.JsonSerializer.Deserialize<Item>(json);
+                storedItems.Add(item);
+            }
+        }
+    }
+}

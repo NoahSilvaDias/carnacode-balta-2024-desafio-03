@@ -2,6 +2,8 @@
 @using System
 @page "/calculadora"
 @inject NavigationManager NavigationManager;
+@inject IToastService toastService
+@inject ILocalStorageService localStorage
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,33 +14,33 @@
     <PageTitle>Calculadora</PageTitle>
 </head>
 <body>
-<div class="app-container">
-    @if (modalVisible)
-    {
-        <Result IsVisible="@modalVisible" onclickCloseModal="@Close" TitleText="@resultTitlePhrase" DescriptionText="@resultDescriptionPhrase" />
-    }
-    else
-    {
-        <div class="title-container">
-            <h1 class="title">Cálculo de IMC</h1>
-        </div>
-        <div class="imc-data-container">
-            <input class="inputHeight" @bind="@height" type="number" placeholder="Altura"/>
-            <input class="inputWeight" @bind="@weight" type="number" placeholder="Peso"/>
-            <input class="inputSex" @bind="@sex" type="text" placeholder="Sexo"/>
-        </div>
-        <div class="ageCaptcha-container">
-            <input class="ageCaptcha" id="ageCaptcha" type="checkbox">
-            <label for="ageCaptcha">Eu tenho 65 anos ou mais</label>
-        </div>
-        <div class="button-request-container">
-            <button class="btnCalculate" onclick="@CalculaIMC">Calcular meu IMC</button>
-            <a href="https://vidasaudavel.einstein.br/calcular-o-seu-imc/" target="_blank">
-                <button class="btnUnderstand" type="submit">Entenda o cálculo</button>
-            </a>
-        </div>
-    }
-</div>
+    <div class="app-container">
+        <BlazoredToasts />
+        @if (modalVisible)
+        {
+            <Result IsVisible="@modalVisible" onclickCloseModal="@Close" TitleText="@item.Titulo" DescriptionText="@item.Descricao" />
+        }
+        else
+        {
+            <div class="title-container">
+                <h1 class="title">Cálculo de IMC</h1>
+            </div>
+            <div class="imc-data-container">
+                <input class="inputHeight" @bind="@height" type="number" placeholder="Altura"/>
+                <input class="inputWeight" @bind="@weight" type="number" placeholder="Peso"/>
+            </div>
+            <div class="ageCaptcha-container">
+                <input class="ageCaptcha" id="ageCaptcha" type="checkbox">
+                <label for="ageCaptcha">Eu tenho 65 anos ou mais</label>
+            </div>
+            <div class="button-request-container">
+                <button class="btnCalculate" @onclick="CalculaIMC">Calcular meu IMC</button>
+                <a href="https://vidasaudavel.einstein.br/calcular-o-seu-imc/" target="_blank">
+                    <button class="btnUnderstand" type="submit">Entenda o cálculo</button>
+                </a>
+            </div>
+        }
+    </div>
 </body>
 </html>
 
@@ -53,7 +55,13 @@
     public double resultCalcule { get; set; }
     public string? resultTitlePhrase { get; set; }
     public string? resultDescriptionPhrase { get; set; }
-    
+    private Item item = new Item();
+    public class Item {
+        public string Titulo { get; set; } = "Peso ideal ✅";
+        public string Data { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
+        public string Descricao { get; set; } = "Parabéns, você está no seu peso ideal, continue mantendo este estilo!";
+    }
+
     private void Close()
     {
         modalVisible = false;
@@ -65,38 +73,52 @@
         weight = string.Empty;
     }
 
-    public void rato()
+    private bool ValidaSeTemDado()
     {
-        if ( string.IsNullOrEmpty(height))
+        if (string.IsNullOrEmpty(height) || string.IsNullOrEmpty(weight) )
         {
-
+            toastService.ShowError("Altura e peso precisam serem preenchidos");
+            return false;
         }
+
+        return true;
     }
 
-    public void CalculaIMC()
+    private async Task SaveData()
     {
-        resultCalcule = Math.Round(WeightAsDouble / (HeightAsDouble * HeightAsDouble), 2);
-        if (resultCalcule < 18.5)
+        string json = System.Text.Json.JsonSerializer.Serialize(item);
+        string keyName = "Data_" + DateTime.Now.Ticks;
+        await localStorage.SetItemAsync(keyName, json);
+    }
+    private async Task CalculaIMC()
+    {
+        if (ValidaSeTemDado())
         {
-            resultTitlePhrase = "\u26d4\ufe0fMagreza!";
-            resultDescriptionPhrase = "Magreza! Procure assistência médica!";
+            resultCalcule = Math.Round(WeightAsDouble / (HeightAsDouble * HeightAsDouble), 2);
+
+            if (resultCalcule < 18.5)
+            {
+                item.Titulo = "\u26d4\ufe0fMagreza!";
+                item.Descricao = "Magreza! Procure assistência médica!";
+            }
+            if (resultCalcule >= 18.5 && resultCalcule < 25)
+            {
+                item.Titulo = "\u2705Parabéns!";
+                item.Descricao = "Você está no peso ideal, continue mantendo este estilo!";
+            }
+            if (resultCalcule >= 25 && resultCalcule < 30)
+            {
+                item.Titulo = "\u26d4\ufe0fSobrepeso";
+                item.Descricao = "Estamos quase lá! Faça alguns ajustes para ficar no peso ideal!";
+            }
+            if (resultCalcule > 30)
+            {
+                item.Titulo = "\u26d4\ufe0fObesidade";
+                item.Descricao = "Obesidade! Procure assistência médica!";
+            }
+            await SaveData();
+            modalVisible = true;
+            EmptyField();
         }
-        if (resultCalcule >= 18.5 && resultCalcule < 25)
-        {
-            resultTitlePhrase = "\u2705Parabéns!";
-            resultDescriptionPhrase = "Você está no peso ideal, continue mantendo este estilo!";
-        }
-        if (resultCalcule >= 25 && resultCalcule < 30)
-        {
-            resultTitlePhrase = "Sobrepeso \u26d4\ufe0f";
-            resultDescriptionPhrase = "Estamos quase lá! Faça alguns ajustes para ficar no peso ideal!";
-        }
-        if (resultCalcule > 30)
-        {
-            resultTitlePhrase = "Obesidade \u26d4\ufe0f";
-            resultDescriptionPhrase = "Obesidade! Procure assistência médica!";
-        }
-        modalVisible = true;
-        EmptyField();
     }
 }

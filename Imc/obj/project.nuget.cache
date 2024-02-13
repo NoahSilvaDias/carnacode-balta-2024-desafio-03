@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "SDoiw9a/D12HDYkB1BbKS+/tcH4KHDWtTS0og3q8l8wMr7J4huuUx0dpWIcH2jaboHwSPRAmfYWtl1bXcl4KEA==",
+  "dgSpecHash": "0rZyL/H6Mxw2YOrS5VP1u4PGCYukupM8ObF7wDkxj8m3IxYgAhYmEPhVqD4c8BYZip5Ww4pVApamUMZMMCBp5w==",
   "success": true,
   "projectFilePath": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\Imc.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\d_noa\\.nuget\\packages\\blazored.localstorage\\4.5.0\\blazored.localstorage.4.5.0.nupkg.sha512",
+    "C:\\Users\\d_noa\\.nuget\\packages\\blazored.toast\\4.1.0\\blazored.toast.4.1.0.nupkg.sha512",
     "C:\\Users\\d_noa\\.nuget\\packages\\microsoft.aspnetcore.authorization\\8.0.0\\microsoft.aspnetcore.authorization.8.0.0.nupkg.sha512",
     "C:\\Users\\d_noa\\.nuget\\packages\\microsoft.aspnetcore.components\\8.0.0\\microsoft.aspnetcore.components.8.0.0.nupkg.sha512",
     "C:\\Users\\d_noa\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\8.0.0\\microsoft.aspnetcore.components.analyzers.8.0.0.nupkg.sha512",
