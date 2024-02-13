@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\Imc.csproj": {}
+    "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\imc\\Imc.csproj": {}
   },
   "projects": {
-    "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\Imc.csproj": {
+    "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\imc\\Imc.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\Imc.csproj",
+        "projectUniqueName": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\imc\\Imc.csproj",
         "projectName": "Imc",
-        "projectPath": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\Imc.csproj",
+        "projectPath": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\imc\\Imc.csproj",
         "packagesPath": "C:\\Users\\d_noa\\.nuget\\packages\\",
-        "outputPath": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\Imc\\obj\\",
+        "outputPath": "C:\\CarnaCode\\carnacode-balta-2024-desafio-03\\imc\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
