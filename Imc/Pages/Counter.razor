@@ -4,15 +4,21 @@
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<p role="status">Current count: @ratao</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCount">Increment</button>
+<button class="btn btn-primary" @onclick="ResetingToZero">Reset Counter</button>
 
 @code {
-    private int currentCount = 0;
+    private int ratao = 0;
 
     private void IncrementCount()
     {
-        currentCount++;
+        ratao++;
+    }
+
+    private void ResetingToZero()
+    {
+        ratao = 0;
     }
 }

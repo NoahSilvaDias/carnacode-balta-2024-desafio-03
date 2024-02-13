@@ -1,0 +1,102 @@
+﻿@using Imc.Components
+@using System
+@page "/calculadora"
+@inject NavigationManager NavigationManager;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <PageTitle>Calculadora</PageTitle>
+</head>
+<body>
+<div class="app-container">
+    @if (modalVisible)
+    {
+        <Result IsVisible="@modalVisible" onclickCloseModal="@Close" TitleText="@resultTitlePhrase" DescriptionText="@resultDescriptionPhrase" />
+    }
+    else
+    {
+        <div class="title-container">
+            <h1 class="title">Cálculo de IMC</h1>
+        </div>
+        <div class="imc-data-container">
+            <input class="inputHeight" @bind="@height" type="number" placeholder="Altura"/>
+            <input class="inputWeight" @bind="@weight" type="number" placeholder="Peso"/>
+            <input class="inputSex" @bind="@sex" type="text" placeholder="Sexo"/>
+        </div>
+        <div class="ageCaptcha-container">
+            <input class="ageCaptcha" id="ageCaptcha" type="checkbox">
+            <label for="ageCaptcha">Eu tenho 65 anos ou mais</label>
+        </div>
+        <div class="button-request-container">
+            <button class="btnCalculate" onclick="@CalculaIMC">Calcular meu IMC</button>
+            <a href="https://vidasaudavel.einstein.br/calcular-o-seu-imc/" target="_blank">
+                <button class="btnUnderstand" type="submit">Entenda o cálculo</button>
+            </a>
+        </div>
+    }
+</div>
+</body>
+</html>
+
+@code
+{
+    bool modalVisible = false;
+    private string height = "";
+    private string weight = "";
+    private double HeightAsDouble => string.IsNullOrEmpty(height) ? 0.0 : double.Parse(height);
+    private double WeightAsDouble => string.IsNullOrEmpty(weight) ? 0.0 : double.Parse(weight);
+    public string sex { get; set; } = "";
+    public double resultCalcule { get; set; }
+    public string? resultTitlePhrase { get; set; }
+    public string? resultDescriptionPhrase { get; set; }
+    
+    private void Close()
+    {
+        modalVisible = false;
+    }
+
+    private void EmptyField()
+    {
+        height = string.Empty;
+        weight = string.Empty;
+    }
+
+    public void rato()
+    {
+        if ( string.IsNullOrEmpty(height))
+        {
+
+        }
+    }
+
+    public void CalculaIMC()
+    {
+        resultCalcule = Math.Round(WeightAsDouble / (HeightAsDouble * HeightAsDouble), 2);
+        if (resultCalcule < 18.5)
+        {
+            resultTitlePhrase = "\u26d4\ufe0fMagreza!";
+            resultDescriptionPhrase = "Magreza! Procure assistência médica!";
+        }
+        if (resultCalcule >= 18.5 && resultCalcule < 25)
+        {
+            resultTitlePhrase = "\u2705Parabéns!";
+            resultDescriptionPhrase = "Você está no peso ideal, continue mantendo este estilo!";
+        }
+        if (resultCalcule >= 25 && resultCalcule < 30)
+        {
+            resultTitlePhrase = "Sobrepeso \u26d4\ufe0f";
+            resultDescriptionPhrase = "Estamos quase lá! Faça alguns ajustes para ficar no peso ideal!";
+        }
+        if (resultCalcule > 30)
+        {
+            resultTitlePhrase = "Obesidade \u26d4\ufe0f";
+            resultDescriptionPhrase = "Obesidade! Procure assistência médica!";
+        }
+        modalVisible = true;
+        EmptyField();
+    }
+}
